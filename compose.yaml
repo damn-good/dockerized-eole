@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  apache:
+    build: ./apache-php-eole # Path to the directory containing Dockerfile
+    ports:
+      - "5001:80"
+    volumes:
+      - ./app:/var/www/localhost/htdocs/
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.5
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_DATABASE: your_database_name
+      MYSQL_USER: your_mysql_user
+      MYSQL_PASSWORD: your_mysql_user_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql:db
+    ports:
+      - "5002:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      PMA_UPLOAD_MAX_FILESIZE: 15M
+
+volumes:
+  mysql_data:
